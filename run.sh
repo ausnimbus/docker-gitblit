@@ -5,9 +5,9 @@ if [ ! -f /opt/gitblit-data/gitblit.properties ]; then
 fi
 
 if [ -z "$JAVA_OPTS" ]; then
-	JAVA_OPTS="-server -Xmx1024m"
+	JAVA_OPTS="-server -Xmx768m"
 fi
 
 chown -Rf gitblit:gitblit /opt/gitblit-data
 
-exec sudo -u gitblit java $JAVA_OPTS -Djava.awt.headless=true -jar /opt/gitblit/gitblit.jar --baseFolder /opt/gitblit-data
+exec java $JAVA_OPTS -Djava.awt.headless=true -jar /opt/gitblit/gitblit.jar --baseFolder /opt/gitblit-data

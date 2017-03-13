@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: gitblit
+metadata:
+  annotations:
+    openshift.io/display-name: GitBlit
+    description: GitBlit quickstart. This template requires 1 persistent storage claims. S2I and scaling to more than one replica is not supported.
+    iconClass: icon-gitblit
+    tags: instant-app,gitblit,git
+  creationTimestamp: null
+  name: gitblit
+message: "The following service(s) have been created in your project: ${NAME}.\n       Username: admin\n       Password: admin\n\n S2I and scaling to more than one replica is not supported."
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Exposes and load balances the application pods
+    name: ${NAME}
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    - name: 9418-tcp
+      port: 9418
+      protocol: TCP
+      targetPort: 9418
+    - name: 29418-tcp
+      port: 29418
+      protocol: TCP
+      targetPort: 29418
+    selector:
+      name: ${NAME}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${NAME}
+  spec:
+    host: ${APPLICATION_DOMAIN}
+    port:
+      targetPort: 8080-tcp
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: gitblit
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: ${NAME}
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${VOLUME_CAPACITY}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      description: Defines how to deploy the application server
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      name: ${NAME}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          name: ${NAME}
+        name: ${NAME}
+      spec:
+        containers:
+        - image: " "
+          name: gitblit
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 9418
+            protocol: TCP
+          - containerPort: 29418
+            protocol: TCP
+          resources:
+            limits:
+              memory: 1Gi
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: "${NAME}-data"
+            mountPath: "/opt/gitblit-data"
+        volumes:
+        - name: "${NAME}-data"
+          persistentVolumeClaim:
+            claimName: "${NAME}"
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - gitblit
+        from:
+          kind: ImageStreamTag
+          name: gitblit:latest
+          namespace: openshift
+      type: ImageChange
+    - type: ConfigChange
+parameters:
+- description: Label used for naming project services.
+  name: NAME
+  value: gitblit
+- description: The exposed hostname that will route to the gitblit installation, if left blank a value will be defaulted.
+  name: APPLICATION_DOMAIN
+- description: Gitblit persistent volume capacity
+  name: VOLUME_CAPACITY
+  displayName: 'Gitblit Volume Capacity'
+  required: true
+  value: 5Gi
