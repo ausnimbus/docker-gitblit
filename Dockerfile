@@ -1,4 +1,4 @@
-FROM java:jre
+FROM openjdk:jre
 MAINTAINER Andrew Lau <support@ausnimbus.com.au>
 
 ENV GITBLIT_VERSION 1.8.0

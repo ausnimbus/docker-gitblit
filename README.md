@@ -1,6 +1,6 @@
 # Gitblit
 
-This is a Docker image of Gitblit (http://gitblit.com/) based on `java:jre`
+This is a Docker image of Gitblit (http://gitblit.com/) based on `openjdk:jre`
 designed to be run on AusNimbus/OpenShift
 
 This is a community maintained AusNimbus image
