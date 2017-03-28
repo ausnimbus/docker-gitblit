@@ -1,0 +1,13 @@
+kind: ImageStream
+apiVersion: v1
+metadata:
+  name: gitblit
+  creationTimestamp: null
+spec:
+  tags:
+  - name: latest
+    annotations:
+      openshift.io/display-name: GitBlit
+    from:
+      kind: DockerImage
+      name: ausnimbus/gitblit:latest
