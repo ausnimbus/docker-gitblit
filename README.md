@@ -1,9 +1,12 @@
 # Gitblit
 
-This is a Docker image of Gitblit (http://gitblit.com/) based on `openjdk:jre`
-designed to be run on AusNimbus/OpenShift
+[![Docker Repository on Quay](https://quay.io/repository/ausnimbus/gitblit/status "Docker Repository on Quay")](https://quay.io/repository/ausnimbus/gitblit)
 
-This is a community maintained AusNimbus image
+This is a Docker image of Gitblit (http://gitblit.com/) based on `openjdk:jre`
+built to run on [AusNimbus](https://www.ausnimbus.com.au/) or OpenShift
+
+This is a community maintained image aimed to serve as an example for running
+containers without the root user.
 
 ## Usage
 
